@@ -26,8 +26,12 @@ def render_doctor_card(row):
     
     # Conditionally render rows
     hosp_html = f'<div class="doc-detail">🏥 <b>Hospital:</b> {hosp}</div>' if str(hosp) not in ['Not specified', 'nan', ''] else ''
-    # Time is now correctly normalized in data_loader.py
-    time_html = f'<div class="doc-detail">⏱️ <b>Time:</b> {unit}</div>' if str(unit) not in ['Not specified', 'nan', ''] else ''
+    # Global fixed Time for all doctors
+    time_html = f'<div class="doc-detail">⏱️ <b>Time:</b> Summer 8 AM to 2 PM, Winter 9 AM to 3 PM</div>'
+    
+    # Only show Unit if it's not a messy time string (we'll do a simple check)
+    unit_is_time = any(x in str(unit).lower() for x in ['am', 'pm', '8', '2'])
+    unit_html = f'<div class="doc-detail">🏢 <b>Unit:</b> {unit}</div>' if str(unit) not in ['Not specified', 'nan', ''] and not unit_is_time else ''
     opd_html = f'<div class="doc-detail">📅 <b>OPD Days:</b> {opd}{timing_str}</div>' if str(opd) not in ['Not specified', 'nan', ''] else ''
     ot_html = f'<div class="doc-detail">🔪 <b>OT Days:</b> {ot}</div>' if str(ot) not in ['Not specified', 'nan', ''] else ''
     
@@ -35,6 +39,7 @@ def render_doctor_card(row):
 <div class="doc-name">🧑‍⚕️ {name}</div>
 <div class="doc-dept">{dept}{desig_str}</div>
 {hosp_html}
+{unit_html}
 {time_html}
 {opd_html}
 {ot_html}
