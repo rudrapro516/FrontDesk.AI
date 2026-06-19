@@ -118,8 +118,7 @@ def chat_interface(df):
                 # Append names as a markdown list instead of cards
                 names_md = ""
                 for _, row in df_response.iterrows():
-                    dept = row.get('Department', 'Unknown')
-                    names_md += f"- **{row['Doctor Name']}**  |  _{dept}_\n"
+                    names_md += f"- **{row['Doctor Name']}**\n"
                 st.markdown(names_md)
                 text_response += "\n\n" + names_md
                     
