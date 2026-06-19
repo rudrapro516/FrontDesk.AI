@@ -34,17 +34,37 @@ def process_query(query, df):
 
     # Find by Department
     depts = df['Department'].dropna().unique()
+    stop_words = {"find", "show", "who", "search", "doctor", "doctors", "department", "available", "today", "tomorrow", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "opd", "ot", "in", "the", "a", "an"}
+    query_words = [w for w in query_lower.split() if w not in stop_words and len(w) > 2]
+    
+    matched_dept = None
+    
+    # 1. Exact match
     for d in depts:
         if str(d).lower() in query_lower:
-            matched = df[df['Department'].astype(str).str.contains(str(d), case=False, na=False, regex=False)]
-            # check if day is specified
-            day = extract_day(query)
-            if day:
-                matched_day = matched[matched['OPD Days'].astype(str).str.contains(day, case=False, na=False)]
-                if not matched_day.empty:
-                    return f"Doctors in {d} available on {day}:", matched_day
-                return f"I couldn't find any doctors in {d} available on {day}. Here are all doctors in {d}:", matched
-            return f"Here are the doctors in the {d} department:", matched
+            matched_dept = d
+            break
+            
+    # 2. Partial match (e.g. "surgery" matches "General Surgery")
+    if not matched_dept:
+        for d in depts:
+            d_lower = str(d).lower()
+            for w in query_words:
+                if w in d_lower:
+                    matched_dept = d
+                    break
+            if matched_dept:
+                break
+                
+    if matched_dept:
+        matched = df[df['Department'].astype(str).str.contains(str(matched_dept), case=False, na=False, regex=False)]
+        day = extract_day(query)
+        if day:
+            matched_day = matched[matched['OPD Days'].astype(str).str.contains(day, case=False, na=False)]
+            if not matched_day.empty:
+                return f"Doctors in {matched_dept} available on {day}:", matched_day
+            return f"I couldn't find any doctors in {matched_dept} available on {day}. Here are all doctors in {matched_dept}:", matched
+        return f"Here are the doctors in the {matched_dept} department:", matched
             
     # Find by Day
     day = extract_day(query)
@@ -100,13 +120,11 @@ def chat_interface(df):
                 text_response, df_response = process_query(prompt, df)
                 
             st.markdown(text_response)
-            display_df = df_response.head(4) # Limit cards in chat
+            display_df = df_response # Show all cards in chat
             if not display_df.empty:
                 cols = st.columns(2)
                 for idx, row in enumerate(display_df.iterrows()):
                     with cols[idx % 2]:
                         render_doctor_card(row[1])
-                if len(df_response) > 4:
-                    st.info(f"+ {len(df_response) - 4} more doctors found. Use the Doctor Finder for a full list.")
                     
             st.session_state.chat_history.append({"role": "assistant", "content": text_response, "data": display_df})
