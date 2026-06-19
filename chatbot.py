@@ -37,6 +37,12 @@ def process_query(query, df):
                     # Only return if it's explicitly a doctor search, or if the name isn't accidentally a department keyword
                     is_dept_keyword = any(term in str(d).lower() for d in depts)
                     if has_dr_prefix or not is_dept_keyword:
+                        day = extract_day(query)
+                        if day:
+                            matched_day = matched[matched['OPD Days'].astype(str).str.contains(day, case=False, na=False)]
+                            if not matched_day.empty:
+                                return f"Doctors matching '{term}' available on {day}:", matched_day
+                            return f"I couldn't find any doctors matching '{term}' available on {day}. Here are all matches for '{term}':", matched
                         return f"Here are the doctors matching '{term}':", matched
                         
     # Find by Department
