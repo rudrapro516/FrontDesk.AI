@@ -7,13 +7,11 @@ def normalize_timing(time_str):
     if pd.isna(time_str) or str(time_str).strip() in ['nan', 'Not specified', '']:
         return "Not specified"
     
-    t = str(time_str).lower().replace(' ', '').replace('.', '')
-    t = re.sub(r'am', ' AM', t)
-    t = re.sub(r'pm', ' PM', t)
-    t = re.sub(r'[-–to]+', ' - ', t)
+    t = str(time_str).lower()
+    t_clean = re.sub(r'[^a-z0-9]', '', t)
     
-    if "8:00am-2:00pm" in t.replace(' ', ''):
-        return "8:00 AM - 2:00 PM"
+    if ('8am' in t_clean or '800am' in t_clean) and ('2pm' in t_clean or '200pm' in t_clean):
+        return "Winter 8 AM to 2 PM, Summer 8 AM to 2 PM"
     
     return str(time_str).strip()
 
@@ -134,7 +132,9 @@ def load_data():
                 axis=1
             )
             
-        # Normalize OPD Timings
+        # Normalize Unit and OPD Timings
+        if 'Unit' in df.columns:
+            df['Unit'] = df['Unit'].apply(normalize_timing)
         if 'OPD Timing' in df.columns:
             df['OPD Timing'] = df['OPD Timing'].apply(normalize_timing)
             
