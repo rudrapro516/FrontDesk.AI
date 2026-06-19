@@ -28,7 +28,7 @@ def main():
         st.markdown("""
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 style="color: #FFFFFF; font-size: 1.8rem; margin-bottom: 0;">🏥 FrontDesk.AI</h1>
-                <p style="color: #888888; font-size: 0.9rem; margin-top: 0;">Dr SN Medical College & Hospital</p>
+                <p style="color: #888888; font-size: 0.9rem; margin-top: 0;">Dr. S N Medical college & associated group of hospitals, Jodhpur</p>
             </div>
         """, unsafe_allow_html=True)
         
