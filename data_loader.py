@@ -11,7 +11,7 @@ def normalize_timing(time_str):
     t_clean = re.sub(r'[^a-z0-9]', '', t)
     
     if ('8am' in t_clean or '800am' in t_clean) and ('2pm' in t_clean or '200pm' in t_clean):
-        return "Winter 8 AM to 2 PM, Summer 8 AM to 2 PM"
+        return "Summer 8 AM to 2 PM, Winter 9 AM to 3 PM"
     
     return str(time_str).strip()
 
