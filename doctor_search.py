@@ -15,7 +15,7 @@ def doctor_finder_interface(df):
         with col3:
             ot_day_filter = st.selectbox("OT Day", ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
             desig_filter = st.selectbox("Designation", ["All"] + sorted(df['Designation'].astype(str).unique().tolist())) if 'Designation' in df.columns else "All"
-            unit_filter = st.selectbox("Unit", ["All"] + sorted(df['Unit'].astype(str).unique().tolist())) if 'Unit' in df.columns else "All"
+            unit_filter = st.selectbox("Time", ["All"] + sorted(df['Unit'].astype(str).unique().tolist())) if 'Unit' in df.columns else "All"
             
     # Apply filters
     filtered_df = df.copy()
