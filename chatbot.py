@@ -37,34 +37,32 @@ def process_query(query, df):
     stop_words = {"find", "show", "who", "search", "doctor", "doctors", "department", "available", "today", "tomorrow", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "opd", "ot", "in", "the", "a", "an"}
     query_words = [w for w in query_lower.split() if w not in stop_words and len(w) > 2]
     
-    matched_dept = None
+    matched_depts = set()
     
     # 1. Exact match
     for d in depts:
         if str(d).lower() in query_lower:
-            matched_dept = d
-            break
+            matched_depts.add(d)
             
-    # 2. Partial match (e.g. "surgery" matches "General Surgery")
-    if not matched_dept:
+    # 2. Partial match (e.g. "surgery" matches "General Surgery", "Pediatric Surgery")
+    if not matched_depts:
         for d in depts:
             d_lower = str(d).lower()
             for w in query_words:
                 if w in d_lower:
-                    matched_dept = d
+                    matched_depts.add(d)
                     break
-            if matched_dept:
-                break
-                
-    if matched_dept:
-        matched = df[df['Department'].astype(str).str.contains(str(matched_dept), case=False, na=False, regex=False)]
+                    
+    if matched_depts:
+        matched = df[df['Department'].isin(list(matched_depts))]
         day = extract_day(query)
+        dept_names = ", ".join(list(matched_depts))
         if day:
             matched_day = matched[matched['OPD Days'].astype(str).str.contains(day, case=False, na=False)]
             if not matched_day.empty:
-                return f"Doctors in {matched_dept} available on {day}:", matched_day
-            return f"I couldn't find any doctors in {matched_dept} available on {day}. Here are all doctors in {matched_dept}:", matched
-        return f"Here are the doctors in the {matched_dept} department:", matched
+                return f"Doctors in {dept_names} available on {day}:", matched_day
+            return f"I couldn't find any doctors in {dept_names} available on {day}. Here are all doctors:", matched
+        return f"Here are the doctors in {dept_names}:", matched
             
     # Find by Day
     day = extract_day(query)
