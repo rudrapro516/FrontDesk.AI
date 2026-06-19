@@ -26,7 +26,9 @@ def render_doctor_card(row):
     
     # Conditionally render rows
     hosp_html = f'<div class="doc-detail">🏥 <b>Hospital:</b> {hosp}</div>' if str(hosp) not in ['Not specified', 'nan', ''] else ''
-    unit_html = f'<div class="doc-detail">🏢 <b>Unit:</b> {unit}</div>' if str(unit) not in ['Not specified', 'nan', ''] else ''
+    # Custom Time string instead of Unit
+    time_str = "Winter 8 AM to 2 PM, Summer 8 AM to 2 PM"
+    time_html = f'<div class="doc-detail">⏱️ <b>Time:</b> {time_str}</div>'
     opd_html = f'<div class="doc-detail">📅 <b>OPD Days:</b> {opd}{timing_str}</div>' if str(opd) not in ['Not specified', 'nan', ''] else ''
     ot_html = f'<div class="doc-detail">🔪 <b>OT Days:</b> {ot}</div>' if str(ot) not in ['Not specified', 'nan', ''] else ''
     
@@ -34,7 +36,7 @@ def render_doctor_card(row):
 <div class="doc-name">🧑‍⚕️ {name}</div>
 <div class="doc-dept">{dept}{desig_str}</div>
 {hosp_html}
-{unit_html}
+{time_html}
 {opd_html}
 {ot_html}
 </div>"""
