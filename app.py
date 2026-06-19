@@ -1,7 +1,7 @@
 import streamlit as st
 
 # MUST BE THE FIRST STREAMLIT COMMAND
-st.set_page_config(page_title="FrontDesk.AI", page_icon="🏥", layout="wide")
+st.set_page_config(page_title="FrontDesk.AI - Dr SN Medical College & Hospital", page_icon="🏥", layout="wide")
 
 from data_loader import load_data
 import time
@@ -28,7 +28,7 @@ def main():
         st.markdown("""
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 style="color: #FFFFFF; font-size: 1.8rem; margin-bottom: 0;">🏥 FrontDesk.AI</h1>
-                <p style="color: #888888; font-size: 0.9rem; margin-top: 0;">Reception & Information</p>
+                <p style="color: #888888; font-size: 0.9rem; margin-top: 0;">Dr SN Medical College & Hospital</p>
             </div>
         """, unsafe_allow_html=True)
         
