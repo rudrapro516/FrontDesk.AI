@@ -15,7 +15,8 @@ def doctor_finder_interface(df):
         with col3:
             ot_day_filter = st.selectbox("OT Day", ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
             desig_filter = st.selectbox("Designation", ["All"] + sorted(df['Designation'].astype(str).unique().tolist())) if 'Designation' in df.columns else "All"
-            unit_filter = st.selectbox("Time", ["All"] + sorted(df['Unit'].astype(str).unique().tolist())) if 'Unit' in df.columns else "All"
+            # Time is now hardcoded globally, so we don't need a filter for it.
+            pass
             
     # Apply filters
     filtered_df = df.copy()
@@ -31,8 +32,7 @@ def doctor_finder_interface(df):
         filtered_df = filtered_df[filtered_df['OT Days'].astype(str).str.contains(ot_day_filter, case=False, na=False)]
     if desig_filter != "All":
         filtered_df = filtered_df[filtered_df['Designation'].astype(str) == desig_filter]
-    if unit_filter != "All":
-        filtered_df = filtered_df[filtered_df['Unit'].astype(str) == unit_filter]
+    # Unit/Time filtering removed because it is globally hardcoded
         
     st.success(f"Found {len(filtered_df)} doctors matching your criteria.")
     
