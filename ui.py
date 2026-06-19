@@ -26,9 +26,8 @@ def render_doctor_card(row):
     
     # Conditionally render rows
     hosp_html = f'<div class="doc-detail">🏥 <b>Hospital:</b> {hosp}</div>' if str(hosp) not in ['Not specified', 'nan', ''] else ''
-    # Custom Time string instead of Unit
-    time_str = "Winter 8 AM to 2 PM, Summer 8 AM to 2 PM"
-    time_html = f'<div class="doc-detail">⏱️ <b>Time:</b> {time_str}</div>'
+    # Time is now correctly normalized in data_loader.py
+    time_html = f'<div class="doc-detail">⏱️ <b>Time:</b> {unit}</div>' if str(unit) not in ['Not specified', 'nan', ''] else ''
     opd_html = f'<div class="doc-detail">📅 <b>OPD Days:</b> {opd}{timing_str}</div>' if str(opd) not in ['Not specified', 'nan', ''] else ''
     ot_html = f'<div class="doc-detail">🔪 <b>OT Days:</b> {ot}</div>' if str(ot) not in ['Not specified', 'nan', ''] else ''
     
