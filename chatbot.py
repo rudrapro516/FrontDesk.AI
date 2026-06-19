@@ -99,11 +99,6 @@ def chat_interface(df):
         avatar = "👤" if msg["role"] == "user" else "🤖"
         with st.chat_message(msg["role"], avatar=avatar):
             st.markdown(msg["content"])
-            if "data" in msg and not msg["data"].empty:
-                cols = st.columns(2)
-                for idx, row in enumerate(msg["data"].iterrows()):
-                    with cols[idx % 2]:
-                        render_doctor_card(row[1])
                     
     prompt = st.chat_input("Ask about doctors, departments, or describe your symptoms...")
     if prompt:
@@ -118,11 +113,14 @@ def chat_interface(df):
                 text_response, df_response = process_query(prompt, df)
                 
             st.markdown(text_response)
-            display_df = df_response # Show all cards in chat
-            if not display_df.empty:
-                cols = st.columns(2)
-                for idx, row in enumerate(display_df.iterrows()):
-                    with cols[idx % 2]:
-                        render_doctor_card(row[1])
+            
+            if not df_response.empty:
+                # Append names as a markdown list instead of cards
+                names_md = ""
+                for _, row in df_response.iterrows():
+                    dept = row.get('Department', 'Unknown')
+                    names_md += f"- **{row['Doctor Name']}**  |  _{dept}_\n"
+                st.markdown(names_md)
+                text_response += "\n\n" + names_md
                     
-            st.session_state.chat_history.append({"role": "assistant", "content": text_response, "data": display_df})
+            st.session_state.chat_history.append({"role": "assistant", "content": text_response})
