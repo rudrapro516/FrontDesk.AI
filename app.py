@@ -1,7 +1,7 @@
 import streamlit as st
 
 # MUST BE THE FIRST STREAMLIT COMMAND
-st.set_page_config(page_title="FrontDesk.AI - Dr SN Medical College & Hospital", page_icon="🏥", layout="wide")
+st.set_page_config(page_title="FrontDesk.AI - Dr. S N Medical college & associated group of hospitals, Jodhpur", page_icon="🏥", layout="wide")
 
 from data_loader import load_data
 import time
