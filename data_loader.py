@@ -133,10 +133,7 @@ def load_data():
             )
             
         # Normalize Unit and OPD Timings
-        if 'Unit' in df.columns:
-            df['Unit'] = df['Unit'].apply(normalize_timing)
-        if 'OPD Timing' in df.columns:
-            df['OPD Timing'] = df['OPD Timing'].apply(normalize_timing)
+        # Removed normalize_timing to preserve original Unit data
             
         # Fill remaining NA values for all columns
         df = df.fillna("Not specified")
