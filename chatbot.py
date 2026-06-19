@@ -21,20 +21,25 @@ def process_query(query, df):
         return response, matched_doctors
 
     # 2. Query matching logic
-    # Find by Name (Dr. X or Doctor X)
-    if "dr." in query_lower or "doctor" in query_lower or "dr " in query_lower:
-        words = query_lower.replace("find", "").replace("show", "").replace("who is", "").replace("search", "").split()
-        search_terms = [w for w in words if w not in ["dr.", "doctor", "dr", "the", "a", "an", "is"]]
-        if search_terms:
-            for term in search_terms:
-                if len(term) > 2: # avoid matching very short words
-                    matched = df[df['Doctor Name'].str.contains(term, case=False, na=False)]
-                    if not matched.empty:
-                        return f"Here are the doctors matching '{term}':", matched
-
-    # Find by Department
     depts = df['Department'].dropna().unique()
-    stop_words = {"find", "show", "who", "search", "doctor", "doctors", "department", "available", "today", "tomorrow", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "opd", "ot", "in", "the", "a", "an"}
+    stop_words = {"find", "show", "who", "search", "doctor", "doctors", "department", "available", "today", "tomorrow", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "opd", "ot", "in", "the", "a", "an", "and", "&"}
+    
+    # Find by Name
+    has_dr_prefix = "dr." in query_lower or "doctor" in query_lower or "dr " in query_lower
+    words = query_lower.replace("find", "").replace("show", "").replace("who is", "").replace("search", "").split()
+    search_terms = [w for w in words if w not in stop_words and w not in ["dr.", "doctor", "dr"]]
+    
+    if search_terms:
+        for term in search_terms:
+            if len(term) > 2: # avoid matching very short words
+                matched = df[df['Doctor Name'].str.contains(term, case=False, na=False)]
+                if not matched.empty:
+                    # Only return if it's explicitly a doctor search, or if the name isn't accidentally a department keyword
+                    is_dept_keyword = any(term in str(d).lower() for d in depts)
+                    if has_dr_prefix or not is_dept_keyword:
+                        return f"Here are the doctors matching '{term}':", matched
+                        
+    # Find by Department
     query_words = [w for w in query_lower.split() if w not in stop_words and len(w) > 2]
     
     matched_depts = set()
